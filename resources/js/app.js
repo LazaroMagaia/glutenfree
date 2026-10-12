@@ -1,7 +1,7 @@
 
 
 import Alpine from 'alpinejs';
-
+import './modal';
 window.Alpine = Alpine;
 
 const root = document.documentElement;

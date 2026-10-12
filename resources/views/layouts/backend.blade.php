@@ -17,7 +17,7 @@
         try { var t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
     </script>
 
-    @vite(['resources/css/backend.css', 'resources/js/backend.js'])
+    @vite(['resources/css/backend.css', 'resources/js/backend.js','resources/js/modal.js'])
     @stack('head')
 </head>
 <body>

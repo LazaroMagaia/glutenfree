@@ -47,6 +47,10 @@ class User extends Authenticatable
     {
         return $this->role === UserRole::Admin;
     }
+    public function isCustomer(): bool
+    {
+        return $this->role === UserRole::User;
+    }
     public function homeRoute(): string
     {
         return $this->isAdmin() ? 'admin.index' : 'user.index';

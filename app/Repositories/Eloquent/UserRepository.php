@@ -13,10 +13,43 @@ class UserRepository implements UserRepositoryInterface
     {
         return User::all();
     }
-    public function paginate(int $perPage = 15) : LengthAwarePaginator
-    {
-        return User::paginate($perPage);
+
+    public function paginateFiltered(
+        ?string $search = null,
+        ?string $role = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+        $query = User::query();
+
+        if ($search !== null && $search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        if ($role !== null && $role !== '') {
+            $query->where('role', $role);
+        }
+
+        return $query->latest()->paginate($perPage);
     }
+
+    public function statistics(): array
+    {
+        return [
+            'totalUsers' => User::count(),
+            'totalAdmins' => User::where('role', UserRole::Admin)->count(),
+            'totalCustomers' => User::where('role', 'user')->count(),
+            'newUsers' => User::where(
+                'created_at',
+                '>=',
+                now()->subDays(30)
+            )->count(),
+        ];
+    }
+
     public function findByLogin(string $login) : ?User
     {
         $login = Str::lower($login);
@@ -36,6 +69,10 @@ class UserRepository implements UserRepositoryInterface
     public function admins(): Collection
     {
         return User::where('role', UserRole::Admin)->get();
+    }
+    public function findById(int $id) : ?User
+    {
+        return User::find($id);
     }
     public function delete(User $user) : bool
     {
