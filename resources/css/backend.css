@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --bg: #f7efe0; --surface: #fffaf1; --soft: #f3e0c2; --ink: #3b2413; --mute: #7b5d45;
+        --line: #e6cfa8; --brand: #603b20; --brandink: #fbf1de; --accent: #de9c4b;
+        --ok: #2f855a; --warn: #b7791f; --bad: #c0392b;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+            --bg: #160e08; --surface: #241609; --soft: #33200f; --ink: #f7e8d0; --mute: #c9a982;
+            --line: #4d3320; --brand: #de9c4b; --brandink: #2a1608; --accent: #eecba0;
+            --ok: #6fcf97; --warn: #f2c94c; --bad: #eb7a6a;
+        }
+    }
+    :root[data-theme="dark"] {
+        --bg: #160e08; --surface: #241609; --soft: #33200f; --ink: #f7e8d0; --mute: #c9a982;
+        --line: #4d3320; --brand: #de9c4b; --brandink: #2a1608; --accent: #eecba0;
+        --ok: #6fcf97; --warn: #f2c94c; --bad: #eb7a6a;
+    }
+
+    html { scroll-padding-top: 5rem; }
+    body { @apply bg-bg font-sans text-ink antialiased; transition: background .3s, color .3s; padding-bottom: env(safe-area-inset-bottom, 0px); }
+    h1, h2, h3 { letter-spacing: -.02em; }
+}
+
+@layer components {
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 1.5rem; }
+    .badge { display: inline-block; border-radius: 999px; padding: .2rem .65rem; font-size: .72rem; font-weight: 600; }
+    .b-ok   { color: var(--ok);     background: color-mix(in srgb, var(--ok) 15%, transparent); }
+    .b-warn { color: var(--warn);   background: color-mix(in srgb, var(--warn) 15%, transparent); }
+    .b-bad  { color: var(--bad);    background: color-mix(in srgb, var(--bad) 15%, transparent); }
+    .b-info { color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); }
+    .nav-a { display: flex; align-items: center; gap: .75rem; border-radius: .9rem; padding: .65rem .9rem; font-size: .9rem; font-weight: 500; color: var(--mute); transition: .2s; }
+    .nav-a:hover { background: var(--soft); color: var(--ink); }
+    .nav-a.on { background: var(--brand); color: var(--brandink); font-weight: 600; }
+    .rise { animation: rise .5s both; }
+    .noscroll::-webkit-scrollbar { height: 6px; }
+    .noscroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 9px; }
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@media (prefers-reduced-motion: reduce) { .rise { animation: none; } }

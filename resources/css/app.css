@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    :root {
+        --bg: #fbf4e8; --surface: #fffaf1; --soft: #f3e0c2; --ink: #3b2413; --mute: #7b5d45;
+        --line: #e6cfa8; --brand: #603b20; --brandink: #fbf1de; --accent: #de9c4b;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+            --bg: #1d130b; --surface: #2a1b10; --soft: #3a2616; --ink: #f7e8d0; --mute: #c9a982;
+            --line: #4d3320; --brand: #de9c4b; --brandink: #2a1608; --accent: #eecba0;
+        }
+    }
+    :root[data-theme="dark"] {
+        --bg: #1d130b; --surface: #2a1b10; --soft: #3a2616; --ink: #f7e8d0; --mute: #c9a982;
+        --line: #4d3320; --brand: #de9c4b; --brandink: #2a1608; --accent: #eecba0;
+    }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+    body { @apply bg-bg font-sans text-ink antialiased; overflow-x: hidden; transition: background .3s, color .3s; padding-bottom: env(safe-area-inset-bottom, 0px); }
+    h1, h2, h3 { letter-spacing: -.03em; }
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+}
+
+@layer components {
+    .ph { position: relative; overflow: hidden; background: var(--soft); display: grid; place-items: center; font-size: 3.5rem; }
+    .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .glass {
+        background: color-mix(in srgb, var(--surface) 72%, transparent);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        border: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+    }
+    .glow { background: radial-gradient(closest-side, var(--accent), transparent); opacity: .35; filter: blur(40px); }
+    .js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s, transform .7s; }
+    .js .reveal.in { opacity: 1; transform: none; }
+    .marq { display: flex; width: max-content; animation: mq 30s linear infinite; }
+    .fl { animation: fl 5s ease-in-out infinite; }
+    .noscroll { scrollbar-width: none; }
+    .noscroll::-webkit-scrollbar { display: none; }
+}
+
+@keyframes mq { to { transform: translateX(-50%); } }
+@keyframes fl { 50% { transform: translateY(-8px); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .js .reveal { opacity: 1; transform: none; }
+    .marq, .fl { animation: none; }
+}
