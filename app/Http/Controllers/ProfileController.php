@@ -2,59 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\Profile\UpdatePasswordRequest;
+use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Models\User;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): View
+    public function __construct(
+        private UserRepositoryInterface $userRepository
+    ) {}
+
+    public function index(Request $request): View
     {
-        return view('profile.edit', [
+        return view('Backend.Perfil.index', [
             'user' => $request->user(),
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(UpdateProfileRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
 
-        Auth::logout();
+        // Só name, email e phone: o papel nunca pode ser alterado aqui.
+        $data = collect($request->validated())
+            ->only(['name', 'email', 'phone'])
+            ->all();
 
-        $user->delete();
+        if ($request->hasFile('avatar')) {
+            $newPath = $request->file('avatar')->store('avatars', 'public');
+            $this->deleteAvatar($user);
+            $data['avatar'] = $newPath;
+        } elseif ($request->boolean('remove_avatar')) {
+            $this->deleteAvatar($user);
+            $data['avatar'] = null;
+        }
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $this->userRepository->update($user, $data);
 
-        return Redirect::to('/');
+        return redirect()
+            ->route('profile.index')
+            ->with('success', 'Perfil actualizado com sucesso.');
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request): RedirectResponse
+    {
+        $this->userRepository->update($request->user(), [
+            'password' => Hash::make($request->validated('password')),
+        ]);
+
+        return redirect()
+            ->route('profile.index')
+            ->with('success', 'Palavra-passe alterada com sucesso.');
+    }
+
+    private function deleteAvatar(User $user): void
+    {
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
     }
 }

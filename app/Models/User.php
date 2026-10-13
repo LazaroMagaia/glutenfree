@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Storage;
 use App\Enums\UserRole;
 #[Fillable(['name', 'email', 'password', 'avatar', 'phone', 'role'])]
 #[Hidden(['password', 'remember_token'])]
@@ -54,6 +56,21 @@ class User extends Authenticatable
     public function homeRoute(): string
     {
         return $this->isAdmin() ? 'admin.index' : 'user.index';
+    }
+    protected function avatarUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            if (! $this->avatar) {
+                return null;
+            }
+
+            // Se um dia guardares um URL completo (ex.: login social), usa-o tal como está
+            if (str_starts_with($this->avatar, 'http')) {
+                return $this->avatar;
+            }
+
+            return Storage::disk('public')->url($this->avatar);
+        });
     }
 }
 

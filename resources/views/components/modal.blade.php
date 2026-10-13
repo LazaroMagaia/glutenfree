@@ -36,12 +36,14 @@
         @if($title)
             aria-labelledby="{{ $id }}-title"
         @endif
-        class="relative z-10 my-auto w-full {{ $sizes[$size] ?? $sizes['md'] }} scale-95 rounded-2xl border border-line bg-surface 
-        opacity-0 shadow-2xl transition-all duration-200"
+        class="relative z-10 my-auto flex max-h-[90vh] w-full
+        {{ $sizes[$size] ?? $sizes['md'] }}
+        scale-95 flex-col overflow-hidden rounded-2xl border border-line
+        bg-surface opacity-0 shadow-2xl transition-all duration-200"
     >
-        {{-- Cabeçalho --}}
+        {{-- Cabeçalho fixo --}}
         @if($title || $closeable)
-            <div class="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
+            <div class="flex shrink-0 items-center justify-between gap-4 border-b border-line px-5 py-4">
                 @if($title)
                     <h2
                         id="{{ $id }}-title"
@@ -64,14 +66,14 @@
             </div>
         @endif
 
-        {{-- Conteúdo --}}
-        <div class="p-5">
+        {{-- Conteúdo com scroll interno --}}
+        <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5">
             {{ $slot }}
         </div>
 
-        {{-- Rodapé opcional --}}
+        {{-- Rodapé fixo --}}
         @isset($footer)
-            <div class="flex flex-col-reverse gap-3 border-t border-line px-5 py-4 sm:flex-row sm:justify-end">
+            <div class="flex shrink-0 flex-col-reverse gap-3 border-t border-line px-5 py-4 sm:flex-row sm:justify-end">
                 {{ $footer }}
             </div>
         @endisset

@@ -22,6 +22,7 @@ class UserController extends Controller
             search: $request->input('search'),
             role: $request->input('role'),
             perPage: 10,
+            excludeId: $request->user()->id,
         );
 
         return view('Backend.Admin.Users.index', [
@@ -47,10 +48,8 @@ class UserController extends Controller
             ->route('admin.users.index')
             ->with('success', "Utilizador {$user->name} criado com sucesso.");
     }
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = $this->userRepository->findById($id);
-
         return view('Backend.Admin.Users.edit', [
             'user' => $user,
         ]);
@@ -65,13 +64,20 @@ class UserController extends Controller
             ->route('admin.users.index')
             ->with('success', "Utilizador {$user->name} atualizado com sucesso.");
     }
-    public function destroy(User $user)
+    public function destroy(User $user, Request $request)
     {
-
+        abort_if($user->is($request->user()), 403, 'Não podes eliminar a tua própria conta.');
         $this->userRepository->delete($user);
 
         return redirect()
             ->route('admin.users.index')
             ->with('success', "Utilizador {$user->name} eliminado com sucesso.");
+    }
+    public function show(User $user, Request $request)
+    {
+        abort_if($user->is($request->user()), 403, 'Não podes visualizar a tua própria conta, faz isso na tua área de utilizador.');
+        return view('Backend.Admin.Users.show', [
+            'user' => $user,
+        ]);
     }
 }

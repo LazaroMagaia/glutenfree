@@ -26,7 +26,13 @@
             </button>
 
             <div class="flex items-center gap-3 rounded-full border border-line bg-surface py-1 pl-1 pr-4">
-                <span class="grid h-8 w-8 place-items-center rounded-full bg-brand text-sm font-bold text-brandink">{{ mb_strtoupper(mb_substr($authUser->name, 0, 1)) }}</span>
+                @if ($authUser->avatar_url)
+                    <img src="{{ $authUser->avatar_url }}"
+                        alt="Foto de {{ $authUser->name }}"
+                        class="h-8 w-8 shrink-0 rounded-full object-cover">
+                @else
+                    <span class="grid h-8 w-8 place-items-center rounded-full bg-brand text-sm font-bold text-brandink">{{ mb_strtoupper(mb_substr($authUser->name, 0, 1)) }}</span>
+                @endif
                 <span class="hidden text-sm leading-tight sm:block"><b class="block">{{ explode(' ', trim($authUser->name))[0] }}</b><span class="text-xs text-mute">{{ $roleLabel }}</span></span>
             </div>
 

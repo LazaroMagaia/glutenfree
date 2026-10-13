@@ -205,7 +205,7 @@
                             <td class="px-5 py-4">
                                 <div class="flex items-center justify-end gap-2">
 
-                                    <a href="#"
+                                    <a href="{{ route('admin.users.show', $user) }}"
                                        title="Ver utilizador"
                                        aria-label="Ver utilizador"
                                        class="rounded-lg p-2 text-mute transition hover:bg-soft hover:text-ink">

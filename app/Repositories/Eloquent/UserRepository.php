@@ -17,9 +17,14 @@ class UserRepository implements UserRepositoryInterface
     public function paginateFiltered(
         ?string $search = null,
         ?string $role = null,
-        int $perPage = 10
+        int $perPage = 10,
+        ?int $excludeId = null
     ): LengthAwarePaginator {
         $query = User::query();
+
+        if ($excludeId !== null) {
+            $query->whereKeyNot($excludeId);
+        }
 
         if ($search !== null && $search !== '') {
             $query->where(function ($q) use ($search) {
