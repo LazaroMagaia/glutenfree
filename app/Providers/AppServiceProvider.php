@@ -10,7 +10,8 @@ use App\Repositories\Contracts\SettingRepositoryInterface;
 use App\Repositories\Eloquent\SettingRepository;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Eloquent\ProductCategoryRepository;
-
+use App\Repositories\Contracts\ProductRepositoryInterface;
+use App\Repositories\Eloquent\ProductRepository;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -18,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
         $this->app->bind(CategoryRepositoryInterface::class, ProductCategoryRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);

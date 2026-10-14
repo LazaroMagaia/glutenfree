@@ -42,12 +42,26 @@ Route::middleware('auth')->group(function () {
         /**
          * Rotas para gestão de produtos (admin)
          */
-        Route::get('products/{category}', [ProductController::class, 'index'])->name('products.index');
-        Route::get('products/{category}/create', [ProductController::class, 'create'])->name('products.create');
-        Route::post('products/{category}', [ProductController::class, 'store'])->name('products.store');
-        Route::get('products/{slug}/{category}/edit', [ProductController::class, 'edit'])->name('products.edit');
-        Route::put('products/{slug}/{category}/update', [ProductController::class, 'update'])->name('products.update');
-        Route::delete('products/{slug}/category', [ProductController::class, 'destroy'])->name('products.destroy');
+
+        Route::get('products/{category}/create', [ProductController::class, 'create'])
+            ->name('products.create');
+        Route::get('products/{category}', [ProductController::class, 'index'])
+            ->name('products.index');
+        Route::get('products/{category}/{slug}/show', [ProductController::class, 'show'])
+            ->name('products.show');
+
+        Route::post('products', [ProductController::class, 'store'])
+            ->name('products.store');
+
+        Route::get('products/{id}/{category}/edit', [ProductController::class, 'edit'])
+            ->name('products.edit');
+
+        Route::put('products/{slug}/update/{id}', [ProductController::class, 'update'])
+            ->name('products.update');
+
+        Route::delete('products/{id}/category/{slug}', [ProductController::class, 'destroy'])
+            ->name('products.destroy');
+
 
     }); 
 });

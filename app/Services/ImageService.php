@@ -20,4 +20,18 @@ class ImageService
             Storage::disk('public')->delete($path);
         }
     }
+
+    /**
+     * Elimina vários ficheiros.
+     */
+    public function deleteMany(array $paths): void
+    {
+        $paths = array_values(array_filter($paths));
+
+        if (empty($paths)) {
+            return;
+        }
+
+        Storage::disk('public')->delete($paths);
+    }
 }
