@@ -28,8 +28,15 @@ class Product extends Model
         'is_new',
         'is_favorite',
         'is_purchasable',
+        'sku',
+        'price',
+        'sale_price',
+        'weight_grams',
+        'track_stock',
+        'quantity_on_hand',
+        'low_stock_threshold',
+        'quantity_reserved',
     ];
-
     protected function casts(): array
     {
         return [
