@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Admin\StockMovement;
 
 class Product extends Model
 {
@@ -36,6 +37,7 @@ class Product extends Model
         'quantity_on_hand',
         'low_stock_threshold',
         'quantity_reserved',
+        'quantity_unavailable',
     ];
     protected function casts(): array
     {
@@ -69,5 +71,24 @@ class Product extends Model
     {
         return $this->hasOne(ProductImage::class)
             ->where('is_primary', true);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function getAvailableAttribute(): int
+    {
+        return max(0, $this->quantity_on_hand - $this->quantity_reserved - $this->quantity_unavailable);
+    }
+
+    /** 'untracked' | 'out' | 'low' | 'ok': para o badge da lista */
+    public function getStockStatusAttribute(): string
+    {
+        if (! $this->track_stock) return 'untracked';
+        if ($this->available <= 0) return 'out';
+        if ($this->available <= $this->low_stock_threshold) return 'low';
+        return 'ok';
     }
 }

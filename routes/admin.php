@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Backend\Admin\{HomeController,UserController,SettingController,ProductCategoryController,ProductController};
+use App\Http\Controllers\Backend\Admin\{HomeController,UserController,SettingController,ProductCategoryController,ProductController,
+        StockMovimentController};
 use App\Http\Controllers\ProfileController;
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +48,7 @@ Route::middleware('auth')->group(function () {
             ->name('products.create');
         Route::get('products/{category}', [ProductController::class, 'index'])
             ->name('products.index');
-        Route::get('products/{category}/{slug}/show', [ProductController::class, 'show'])
+        Route::get('products/show/{category}/{slug}', [ProductController::class, 'show'])
             ->name('products.show');
 
         Route::post('products', [ProductController::class, 'store'])
@@ -61,7 +62,13 @@ Route::middleware('auth')->group(function () {
 
         Route::delete('products/{id}/category/{slug}', [ProductController::class, 'destroy'])
             ->name('products.destroy');
-
+        /**
+         * Rotas para gestão de stock (admin)
+         */
+        Route::get('products/stock/{category}/{slug}', [StockMovimentController::class, 'index'])
+            ->name('products.stock');
+        Route::post('products/stock/{category}/{slug}', [StockMovimentController::class, 'store'])
+            ->name('products.stock.store');
 
     }); 
 });

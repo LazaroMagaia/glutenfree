@@ -41,7 +41,7 @@ class ProductController extends Controller
             compact('products', 'categorySlug')
         );
     }
-
+ 
     public function create($categorySlug)
     {
         $category = ProductCategory::with('parent')
@@ -69,8 +69,8 @@ class ProductController extends Controller
 
     public function show($categorySlug, $productId)
     {
-        $product = $this->findProductInCategory($categorySlug, $productId);
-
+        $prod = Product::with('category')->where('slug', $productId)->firstOrFail();
+        $product = $this->findProductInCategory($categorySlug, $prod->id);
         return view(
             'Backend.Admin.Products.show',
             compact('product', 'categorySlug')

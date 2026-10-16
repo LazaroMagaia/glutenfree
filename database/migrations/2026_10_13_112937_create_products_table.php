@@ -45,6 +45,7 @@ return new class extends Migration
             $table->unsignedInteger('quantity_on_hand')->default(0);   // em stock (inclui o reservado)
             $table->unsignedInteger('low_stock_threshold')->default(0); // 0 = sem alerta
             $table->unsignedInteger('quantity_reserved')->default(0);  // comprometido com encomendas abertas
+            $table->unsignedInteger('quantity_unavailable')->default(0); // danificado/em quarentena, ainda fisicamente em stock
             $table->timestamps();
             $table->softDeletes(); // "arquivar" = soft delete
 
